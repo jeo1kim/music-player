@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Player - Upload Songs</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .auth-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f5f5f5;
+            border-radius: 10px;
+        }
+
+        .user-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .user-email {
+            color: #333;
+            font-weight: 500;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #e0e0e0;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #d0d0d0;
+        }
+
+        .btn-google {
+            background: white;
+            color: #333;
+            border: 1px solid #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-google:hover {
+            background: #f9f9f9;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        input[type="text"],
+        input[type="file"],
+        input[type="email"],
+        input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="password"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+        }
+
+        .file-input-label {
+            display: block;
+            padding: 12px;
+            border: 2px dashed #e0e0e0;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: #f9f9f9;
+        }
+
+        .file-input-label:hover {
+            border-color: #667eea;
+            background: #f0f0ff;
+        }
+
+        .file-input-label.has-file {
+            border-color: #667eea;
+            background: #f0f0ff;
+            color: #667eea;
+        }
+
+        .file-selected-hint {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 8px;
+            padding: 8px 12px;
+            background: #e8f5e9;
+            border: 1px solid #4caf50;
+            border-radius: 6px;
+            font-size: 14px;
+            color: #2e7d32;
+        }
+
+        .file-selected-hint-icon {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #4caf50;
+            color: white;
+            border-radius: 50%;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .artwork-preview {
+            margin-top: 12px;
+            max-width: 200px;
+            max-height: 200px;
+            border-radius: 8px;
+            border: 2px solid #667eea;
+            object-fit: cover;
+        }
+
+        input[type="file"] {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .upload-btn {
+            width: 100%;
+            margin-top: 10px;
+            padding: 14px;
+            font-size: 16px;
+        }
+
+        .upload-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .message {
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .message-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .message-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .message-info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #ffffff;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 0.8s linear infinite;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .hidden {
+            display: none;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎵 Music Uploader</h1>
+        <p class="subtitle">Upload songs to the shared music library</p>
+
+        <!-- Upload Form -->
+        <div id="uploadForm">
+            <div id="message"></div>
+
+            <form id="songForm" onsubmit="handleSubmit(event)">
+                <div class="form-group">
+                    <label for="audioFile">Audio File *</label>
+                    <div class="file-input-wrapper">
+                        <label class="file-input-label" id="fileLabel" for="audioFile">
+                            <span id="fileLabelText">Click to select audio file (MP3, M4A, etc.)</span>
+                        </label>
+                        <input type="file" id="audioFile" accept="audio/*" required onchange="handleFileSelect(event)" />
+                    </div>
+                    <div id="audioFileHint" class="file-selected-hint hidden">
+                        <span class="file-selected-hint-icon">✓</span>
+                        <span id="audioFileHintText"></span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="title">Title *</label>
+                    <input type="text" id="title" placeholder="Song title" required />
+                </div>
+
+                <div class="form-group">
+                    <label for="artist">Artist</label>
+                    <input type="text" id="artist" placeholder="Artist name" />
+                </div>
+
+                <div class="form-group">
+                    <label for="album">Album</label>
+                    <input type="text" id="album" placeholder="Album name" />
+                </div>
+
+                <div class="form-group">
+                    <label for="artwork">Artwork (Optional)</label>
+                    <div style="margin-bottom: 10px;">
+                        <input type="text" id="artworkUrl" placeholder="Provide artwork URL (https://example.com/artwork.jpg)" oninput="handleArtworkUrlInput(event)" />
+                        <div id="artworkUrlHint" class="file-selected-hint hidden">
+                            <span class="file-selected-hint-icon">✓</span>
+                            <span>Artwork URL provided</span>
+                        </div>
+                        <img id="artworkUrlPreview" class="artwork-preview hidden" alt="Artwork preview" />
+                    </div>
+                    <div style="text-align: center; margin: 10px 0; color: #666; font-size: 14px;">OR</div>
+                    <div class="file-input-wrapper">
+                        <label class="file-input-label" id="artworkFileLabel" for="artworkFile">
+                            <span id="artworkFileLabelText">Upload artwork image (JPG, PNG, etc.)</span>
+                        </label>
+                        <input type="file" id="artworkFile" accept="image/*" onchange="handleArtworkFileSelect(event)" />
+                    </div>
+                    <div id="artworkFileHint" class="file-selected-hint hidden">
+                        <span class="file-selected-hint-icon">✓</span>
+                        <span id="artworkFileHintText"></span>
+                    </div>
+                    <img id="artworkFilePreview" class="artwork-preview hidden" alt="Artwork preview" />
+                </div>
+
+                <button type="submit" class="btn btn-primary upload-btn" id="submitBtn">
+                    Upload Song
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script type="module" src="upload.js"></script>
+</body>
+</html>
+

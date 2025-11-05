@@ -1,12 +1,12 @@
 import { TracksList } from '@/components/TracksList'
-import { screenPadding } from '@/constants/tokens'
+import { screenPadding, colors } from '@/constants/tokens'
 import { trackTitleFilter } from '@/helpers/filter'
 import { generateTracksListId } from '@/helpers/miscellaneous'
 import { useNavigationSearch } from '@/hooks/useNavigationSearch'
-import { useTracks } from '@/store/library'
+import { useTracks, useLibraryStore } from '@/store/library'
 import { defaultStyles } from '@/styles'
-import { useMemo } from 'react'
-import { ScrollView, View } from 'react-native'
+import { useMemo, useState } from 'react'
+import { ScrollView, View, RefreshControl } from 'react-native'
 
 const SongsScreen = () => {
 	const search = useNavigationSearch({
@@ -16,6 +16,8 @@ const SongsScreen = () => {
 	})
 
 	const tracks = useTracks()
+	const { refreshTracks, isLoading } = useLibraryStore()
+	const [refreshing, setRefreshing] = useState(false)
 
 	const filteredTracks = useMemo(() => {
 		if (!search) return tracks
@@ -23,11 +25,27 @@ const SongsScreen = () => {
 		return tracks.filter(trackTitleFilter(search))
 	}, [search, tracks])
 
+	const onRefresh = async () => {
+		setRefreshing(true)
+		try {
+			await refreshTracks()
+		} finally {
+			setRefreshing(false)
+		}
+	}
+
 	return (
 		<View style={defaultStyles.container}>
 			<ScrollView
 				contentInsetAdjustmentBehavior="automatic"
 				style={{ paddingHorizontal: screenPadding.horizontal }}
+				refreshControl={
+					<RefreshControl
+						refreshing={refreshing || isLoading}
+						onRefresh={onRefresh}
+						tintColor={colors.primary}
+					/>
+				}
 			>
 				<TracksList
 					id={generateTracksListId('songs', search)}
