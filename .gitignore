@@ -36,6 +36,9 @@ yarn-error.*
 .env.production
 .env.test
 
+# web upload interface (contains Firebase config)
+web-upload/
+
 # typescript
 *.tsbuildinfo
 
